@@ -1,7 +1,5 @@
 //========================= MAIN =========================//
-export const SERVICE_NAME = "information-system";
 export const AUXILIARY_FOLDER = "additional-files";
-export const USERS_FILE = "users-list";
 export const USERS_FOLDER = "users";
 
 //========================= CRYPTO =========================//

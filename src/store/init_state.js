@@ -1,8 +1,9 @@
 const init_state = {
-  loader_status: true,
+  loader_status: false,
   active_component: undefined,
   username: undefined,
-  crypto_keys: []
+  keys: undefined,
+  is_admin: undefined
 };
 
 export default init_state;

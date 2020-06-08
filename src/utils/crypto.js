@@ -1,10 +1,6 @@
 import crypto from "crypto";
 import { HASH_ALGORITHM, CIPHER_ALGORITHM, KEY_LENGTH, IV_LENGTH } from "../configs/global";
-
-const hexToByteArray = hex => {
-  const byte_array = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(i => parseInt(i, 16)));
-  return byte_array;
-};
+import { hexToByteArray, removeSystemSymbols } from "./helper";
 
 export const generateKey = (password, salt) => {
   const iv = crypto.scryptSync(salt, password, IV_LENGTH);
@@ -25,7 +21,8 @@ export const decrypt = (content, key_hex) => {
   const iv = key_bytes.slice(0, IV_LENGTH);
   const key = key_bytes.slice(IV_LENGTH);
   const message = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv);
-  return message.update(content, "hex", "utf-8") + message.final("utf-8");
+  message.setAutoPadding(false);
+  return removeSystemSymbols(message.update(content, "hex", "utf-8") + message.final("utf-8"));
 };
 
 export const hash = content => {

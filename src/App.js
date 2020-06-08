@@ -1,22 +1,20 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { remote } from "electron";
-import path from "path";
-import fs from "fs";
+import * as _path from "path";
+import { AUXILIARY_FOLDER, USERS_FOLDER } from "./configs/global";
 import { setActiveComponent, setLoaderStatus } from "./store/actions";
-import { AUXILIARY_FOLDER, USERS_FILE } from "./configs/global";
-import AuthModule from "./components/auth_module/auth_module";
+import { getAppPath, existItem } from "./utils/fs_assistant";
 import InitModule from "./components/init_module/init_module";
+import AuthModule from "./components/auth_module/auth_module";
+import UserModule from "./components/user_module/user_module";
 import "./App.scss";
 
 class App extends Component {
   componentDidMount() {
-    this.props.setActiveComponent("init_module");
-    this.props.setLoaderStatus(false);
-    // const users_file_path = path.join(path.dirname(remote.app.getAppPath()), AUXILIARY_FOLDER, USERS_FILE);
-    // if (fs.existsSync(users_file_path)) this.props.setActiveComponent("auth_module");
-    // else this.props.setActiveComponent("init_module");
+    const admin_file_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, "admin");
+    if (existItem(admin_file_path)) this.props.setActiveComponent("auth_module");
+    else this.props.setActiveComponent("init_module");
   }
 
   renderActiveComponent() {
@@ -25,6 +23,8 @@ class App extends Component {
         return <InitModule />;
       case "auth_module":
         return <AuthModule />;
+      case "user_module":
+        return <UserModule />;
       default:
         return undefined;
     }

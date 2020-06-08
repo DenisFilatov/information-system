@@ -3,14 +3,16 @@ import ReactDOM from "react-dom";
 import ReduxToastr from "react-redux-toastr";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
-import configureStore from "./store/store";
+import createNewStore from "./store/store";
 import App from "./App";
 import Loader from "./components/loader/loader";
 import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import "./index.scss";
 
+export const store = createNewStore();
+
 ReactDOM.render(
-  <Provider store={configureStore()}>
+  <Provider store={store}>
     <App />
     <Loader />
     <ReduxToastr

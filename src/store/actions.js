@@ -8,12 +8,7 @@ export const setLoaderStatus = status => ({
   payload: status
 });
 
-export const setUsername = name => ({
-  type: "SET_USERNAME",
-  payload: name
-});
-
-export const setCryptoKeys = keys => ({
-  type: "SET_CRYPTO_KEYS",
-  payload: keys
+export const setUserData = ({ username, keys, is_admin }) => ({
+  type: "SET_USER_DATA",
+  payload: { username, keys, is_admin }
 });

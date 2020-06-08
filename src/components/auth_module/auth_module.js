@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import { toastr } from "react-redux-toastr";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { remote } from "electron";
-import path from "path";
-import fs from "fs";
-import { setLoaderStatus, setCryptoKeys, setUsername } from "../../store/actions";
-import { AUXILIARY_FOLDER, USERS_FILE, USERS_FOLDER } from "../../configs/global";
-import { generateKey, decrypt, hash } from "../../utils/crypto";
+import { setLoaderStatus, setActiveComponent } from "../../store/actions";
+import { logIn } from "../../utils/helper";
 import TextInput from "../common_components/text_input";
 import Button from "../common_components/button";
 import "./auth_module.scss";
@@ -17,21 +13,37 @@ class AuthModule extends Component {
     super(props);
     this.state = {
       username: "",
-      password: "",
-      all_users: undefined
+      password: ""
     };
   }
 
-  componentDidMount() {
+  onClickLogin() {
+    const { username, password } = this.state;
+    if (!username && !password) {
+      toastr.warning("Warning", "Please enter username and password");
+      return undefined;
+    }
+    if (!username) {
+      toastr.warning("Warning", "Please enter username");
+      return undefined;
+    }
+    if (!password) {
+      toastr.warning("Warning", "Please enter password");
+      return undefined;
+    }
     this.props.setLoaderStatus(true);
-    const users_file_path = path.join(path.dirname(remote.app.getAppPath()), AUXILIARY_FOLDER, USERS_FILE);
-    fs.readFile(users_file_path, { encoding: "utf-8" }, (err, data) => {
-      if (err) console.log(err);
-      else {
-        this.setState({ all_users: JSON.parse(data) });
-        setTimeout(() => this.props.setLoaderStatus(false), 1000);
-      }
-    });
+    if (logIn(username, password)) {
+      setTimeout(() => {
+        this.props.setActiveComponent("user_module");
+        this.props.setLoaderStatus(false);
+        toastr.success("Notification", `Hi, ${username}! Welcome to information system.`);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        this.props.setLoaderStatus(false);
+        toastr.warning("Warning", "Username or password is incorrect");
+      }, 500);
+    }
   }
 
   renderUsernameInput() {
@@ -60,44 +72,7 @@ class AuthModule extends Component {
   }
 
   renderLoginButton() {
-    const handleOnClick = () => {
-      const { all_users, username, password } = this.state;
-      if (!username && !password) {
-        toastr.warning("Warning", "Please enter username and password");
-        return undefined;
-      }
-      if (!username) {
-        toastr.warning("Warning", "Please enter username");
-        return undefined;
-      }
-      if (!password) {
-        toastr.warning("Warning", "Please enter password");
-        return undefined;
-      }
-      if (!all_users[username] || all_users[username] !== hash(password)) {
-        toastr.warning("Warning", "Username or password is incorrect");
-        return undefined;
-      }
-      this.props.setLoaderStatus(true);
-      this.props.setUsername(username);
-      const keys_file_path = path.join(
-        path.dirname(remote.app.getAppPath()),
-        AUXILIARY_FOLDER,
-        USERS_FOLDER,
-        username
-      );
-      if (fs.existsSync(keys_file_path)) {
-        fs.readFile(keys_file_path, { encoding: "utf-8" }, (err, data) => {
-          if (err) console.log(err);
-          else {
-            const key = generateKey(password, username);
-            const decrypted_data = decrypt(data, key);
-            this.props.setCryptoKeys(JSON.parse(decrypted_data));
-          }
-        });
-      }
-    };
-    return <Button class_name="is-am-button" text="LOGIN" onClick={handleOnClick} />;
+    return <Button class_name="is-am-button" text="LOGIN" onClick={() => this.onClickLogin()} />;
   }
 
   render() {
@@ -113,9 +88,8 @@ class AuthModule extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch),
-  setUsername: bindActionCreators(setUsername, dispatch),
-  setCryptoKeys: bindActionCreators(setCryptoKeys, dispatch)
+  setActiveComponent: bindActionCreators(setActiveComponent, dispatch),
+  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch)
 });
 
 export default connect(

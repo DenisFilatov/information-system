@@ -12,14 +12,9 @@ export default (state = init_state, action) => {
       new_state.loader_status = action.payload;
       return new_state;
     }
-    case "SET_USERNAME": {
-      const new_state = { ...state };
-      new_state.username = action.payload;
-      return new_state;
-    }
-    case "SET_CRYPTO_KEYS": {
-      const new_state = { ...state };
-      new_state.crypto_keys = action.payload;
+    case "SET_USER_DATA": {
+      const { username, keys, is_admin } = action.payload;
+      const new_state = { ...state, username, keys, is_admin };
       return new_state;
     }
     default: {

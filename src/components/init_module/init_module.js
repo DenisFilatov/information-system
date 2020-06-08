@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { toastr } from "react-redux-toastr";
-import path from "path";
-import { AUXILIARY_FOLDER } from "../../configs/global";
-import { getAppPath, deleteFolder } from "../../utils/fs_assistant";
+import * as _path from "path";
+import { AUXILIARY_FOLDER, USERS_FOLDER } from "../../configs/global";
+import { setActiveComponent, setLoaderStatus } from "../../store/actions";
+import { getAppPath, createFolder, writeFile } from "../../utils/fs_assistant";
+import { generateKey, encrypt } from "../../utils/crypto";
 import TextInput from "../common_components/text_input";
 import Button from "../common_components/button";
 import "./init_module.scss";
@@ -16,15 +19,27 @@ class InitModule extends Component {
     };
   }
 
-  onSaveSettings() {
+  onClickSave() {
     const { password } = this.state;
     if (!password) {
       toastr.warning("Warning", "Please enter password");
       return undefined;
     }
-    const auxiliary_folder = path.join(getAppPath(), AUXILIARY_FOLDER);
-    //deleteFolder(auxiliary_folder);
-    console.log(auxiliary_folder);
+    this.props.setLoaderStatus(true);
+    const auxiliary_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER);
+    const users_folder_path = _path.join(auxiliary_folder_path, USERS_FOLDER);
+    const admin_file_path = _path.join(users_folder_path, "admin");
+    const admin_file_data = JSON.stringify({ username: "admin", keys: [], is_admin: true });
+    const key = generateKey(password, "admin");
+    const encrypted_admin_file_data = encrypt(admin_file_data, key);
+    createFolder(auxiliary_folder_path);
+    createFolder(users_folder_path);
+    writeFile(admin_file_path, encrypted_admin_file_data);
+    setTimeout(() => {
+      this.props.setActiveComponent("auth_module");
+      this.props.setLoaderStatus(false);
+      toastr.success("Notification", "Initial settings has been succeeded");
+    }, 1000);
   }
 
   renderPasswordInput() {
@@ -41,7 +56,7 @@ class InitModule extends Component {
   }
 
   renderSaveButton() {
-    return <Button class_name="is-im-button" text="SAVE" onClick={() => this.onSaveSettings()} />;
+    return <Button class_name="is-im-button" text="SAVE" onClick={() => this.onClickSave()} />;
   }
 
   render() {
@@ -63,7 +78,12 @@ class InitModule extends Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch),
+  setActiveComponent: bindActionCreators(setActiveComponent, dispatch)
+});
+
 export default connect(
   null,
-  null
+  mapDispatchToProps
 )(InitModule);

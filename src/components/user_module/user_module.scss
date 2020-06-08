@@ -1,0 +1,66 @@
+//========================== UserModule ==========================//
+.is-um-container {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  left: 200px;
+  padding: 20px;
+  background-color: #282c34;
+  color: #ffffff;
+}
+
+//========================== Sidebar ==========================//
+.is-s-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 200px;
+  padding: 20px;
+  background-color: grey;
+}
+
+.is-s-header {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.is-s-items {
+  & > * {
+    padding: 5px 0;
+    cursor: pointer;
+  }
+  & > *:not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
+
+//========================== Topbar ==========================//
+.is-t-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 200px;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: grey;
+}
+
+.is-t-username {
+  margin: 0 20px;
+}
+
+.is-t-logout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 20px;
+  cursor: pointer;
+
+  img {
+    margin-left: 5px;
+  }
+}
