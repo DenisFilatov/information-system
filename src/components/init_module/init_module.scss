@@ -1,0 +1,38 @@
+.is-im-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #282c34;
+  color: #ffffff;
+}
+
+.is-im-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  margin: 20px;
+
+  img {
+    margin-left: 10px;
+  }
+}
+
+.is-im-description {
+  margin: 50px;
+  text-align: justify;
+  font-size: 20px;
+  padding: 10px 0;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.is-im-input {
+  width: 500px;
+  margin: 20px auto;
+}
+
+.is-im-button {
+  width: 350px;
+  margin: auto;
+}
