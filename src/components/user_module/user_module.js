@@ -2,11 +2,16 @@ import React, { Component } from "react";
 import { toastr } from "react-redux-toastr";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { setActiveComponent, setLoaderStatus } from "../../store/actions";
+import * as _path from "path";
+import { AUXILIARY_FOLDER, USERS_FOLDER } from "../../configs/global";
+import { setActiveComponent, setLoaderStatus, setUserData } from "../../store/actions";
+import { getAppPath, writeFile } from "../../utils/fs_assistant";
+import { generateKey, encrypt } from "../../utils/crypto";
 import { logOut } from "../../utils/helper";
 import Loader from "../loader/loader";
 import Topbar from "./topbar";
 import Sidebar from "./sidebar";
+import NewUserForm from "./new_user_form";
 import "./user_module.scss";
 
 class UserModule extends Component {
@@ -14,7 +19,7 @@ class UserModule extends Component {
     super(props);
     this.state = {
       is_loading: false,
-      active_menu_item: "available_files"
+      selected_item: "add_user"
     };
   }
 
@@ -39,7 +44,7 @@ class UserModule extends Component {
       { title: "Add file", name: "add_file", is_admin: false },
       { title: "Add user", name: "add_user", is_admin: true }
     ];
-    const handleOnClick = active_menu_item => this.setState({ active_menu_item });
+    const handleOnClick = selected_item => this.setState({ selected_item });
     return (
       <Sidebar
         header_text="MENU"
@@ -49,15 +54,52 @@ class UserModule extends Component {
     );
   }
 
+  renderNewUserForm() {
+    const handleOnSave = ({ username, password, level, admin_password }) => {
+      this.setState({ is_loading: true });
+      setTimeout(() => {
+        const keys = (this.props.keys || []).slice(0, level);
+        for (let i = keys.length; i < level; i++) {
+          const new_key = generateKey();
+          keys.push(new_key);
+        }
+        const user_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, username);
+        const user_data = JSON.stringify({ username, keys, is_admin: false });
+        const key = generateKey(password, username);
+        const encrypted_user_data = encrypt(user_data, key);
+        writeFile(user_path, encrypted_user_data);
+        if (keys.length > this.props.keys.length) {
+          const admin_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, "admin");
+          const admin_data = JSON.stringify({ username: "admin", keys, is_admin: true });
+          const key = generateKey(admin_password, "admin");
+          const encrypted_admin_data = encrypt(admin_data, key);
+          writeFile(admin_path, encrypted_admin_data);
+          this.props.setUserData({ keys });
+        }
+        this.setState({ is_loading: false });
+        toastr.success("Notification", `User ${username} created successfully`);
+      }, 500);
+    };
+    return <NewUserForm onSave={handleOnSave} />;
+  }
+
   renderLoader() {
     const { is_loading } = this.state;
     return <Loader source="props" position="absolute" is_active={is_loading} />;
   }
 
-  renderActiveItem() {
+  renderSelectedItem() {
+    const renderItem = () => {
+      switch (this.state.selected_item) {
+        case "add_user":
+          return this.renderNewUserForm();
+        default:
+          return undefined;
+      }
+    };
     return (
       <div className="is-um-active_item">
-        <div>UserModule</div>
+        {renderItem()}
         {this.renderLoader()}
       </div>
     );
@@ -68,7 +110,7 @@ class UserModule extends Component {
       <React.Fragment>
         {this.renderTopbar()}
         {this.renderSidebar()}
-        {this.renderActiveItem()}
+        {this.renderSelectedItem()}
       </React.Fragment>
     );
   }
@@ -82,7 +124,8 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   setActiveComponent: bindActionCreators(setActiveComponent, dispatch),
-  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch)
+  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch),
+  setUserData: bindActionCreators(setUserData, dispatch)
 });
 
 export default connect(

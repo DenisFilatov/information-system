@@ -3,6 +3,8 @@ import { HASH_ALGORITHM, CIPHER_ALGORITHM, KEY_LENGTH, IV_LENGTH } from "../conf
 import { hexToByteArray, removeSystemSymbols } from "./helper";
 
 export const generateKey = (password, salt) => {
+  if (password === undefined) password = crypto.randomBytes(32);
+  if (salt === undefined) salt = crypto.randomBytes(32);
   const iv = crypto.scryptSync(salt, password, IV_LENGTH);
   const key = crypto.scryptSync(password, salt, KEY_LENGTH);
   return `${iv.toString("hex")}${key.toString("hex")}`;

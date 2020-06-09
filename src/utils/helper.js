@@ -2,7 +2,7 @@ import * as _path from "path";
 import { AUXILIARY_FOLDER, USERS_FOLDER } from "../configs/global";
 import { store } from "../index";
 import { setUserData } from "../store/actions";
-import { getAppPath, readFile } from "./fs_assistant";
+import { getAppPath, getDirectoryContents, readFile } from "./fs_assistant";
 import { generateKey, decrypt } from "./crypto";
 import { setPassword, deleteAllPasswords } from "./pwd_manager";
 
@@ -12,7 +12,7 @@ export const hexToByteArray = hex => {
 };
 
 export const removeSystemSymbols = str => {
-  return str.replace(/[\2\3]/g, "");
+  return str.replace(/[\x00-\x1F]/g, "");
 };
 
 export const isJsonString = content => {
@@ -26,6 +26,21 @@ export const isJsonString = content => {
 
 export const isObject = obj => {
   return obj === Object(obj);
+};
+
+export const getUsersList = () => {
+  const users_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER);
+  return getDirectoryContents(users_folder_path) || [];
+};
+
+export const isAdminPassword = password => {
+  const admin_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, "admin");
+  const file_content = readFile(admin_path);
+  if (!file_content) return false;
+  const key = generateKey(password, "admin");
+  const decrypted_content = decrypt(file_content, key);
+  if (isJsonString(decrypted_content) && JSON.parse(decrypted_content).keys) return true;
+  else return false;
 };
 
 export const logIn = (username, password) => {

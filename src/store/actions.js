@@ -8,7 +8,7 @@ export const setLoaderStatus = status => ({
   payload: status
 });
 
-export const setUserData = ({ username, keys, is_admin }) => ({
+export const setUserData = data => ({
   type: "SET_USER_DATA",
-  payload: { username, keys, is_admin }
+  payload: data
 });

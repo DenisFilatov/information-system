@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "./common_components.scss";
 
-export default class TextInput extends Component {
+export default class Input extends Component {
   renderInput() {
-    const { value, placeholder, text_security, disabled, onChange } = this.props;
-    const type = text_security ? "password" : "text";
+    const { value, type, placeholder, disabled, onChange } = this.props;
     return (
       <input
         type={type}
@@ -22,18 +21,18 @@ export default class TextInput extends Component {
   }
 }
 
-TextInput.defaultProps = {
+Input.defaultProps = {
   value: "",
+  type: "text",
   placeholder: "Input",
-  text_security: false,
   disabled: false,
   onChange: value => console.log(value)
 };
-TextInput.propTypes = {
+Input.propTypes = {
   value: PropTypes.any,
+  type: PropTypes.string,
   class_name: PropTypes.string,
   placeholder: PropTypes.string,
-  text_security: PropTypes.bool,
   disabled: PropTypes.bool,
   onChange: PropTypes.func
 };

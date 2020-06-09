@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { setLoaderStatus, setActiveComponent } from "../../store/actions";
 import { getPassword } from "../../utils/pwd_manager";
 import { logIn } from "../../utils/helper";
-import TextInput from "../common_components/text_input";
+import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./auth_module.scss";
 
@@ -26,39 +26,11 @@ class AuthModule extends Component {
     }
   }
 
-  onClickLogin() {
-    const { username, password } = this.state;
-    if (!username && !password) {
-      toastr.warning("Warning", "Please enter username and password");
-      return undefined;
-    }
-    if (!username) {
-      toastr.warning("Warning", "Please enter username");
-      return undefined;
-    }
-    if (!password) {
-      toastr.warning("Warning", "Please enter password");
-      return undefined;
-    }
-    this.props.setLoaderStatus(true);
-    if (logIn(username, password)) {
-      setTimeout(() => {
-        this.props.setActiveComponent("user_module");
-        this.props.setLoaderStatus(false);
-        toastr.success("Notification", `Hi, ${username}! Welcome to information system.`);
-      }, 500);
-    } else {
-      setTimeout(() => {
-        this.props.setLoaderStatus(false);
-        toastr.warning("Warning", "Username or password is incorrect");
-      }, 500);
-    }
-  }
-
   renderUsernameInput() {
     const handleOnChange = username => this.setState({ username });
     return (
-      <TextInput
+      <Input
+        type="text"
         class_name="is-am-input"
         placeholder="Username"
         value={this.state.username}
@@ -70,10 +42,10 @@ class AuthModule extends Component {
   renderPasswordInput() {
     const handleOnChange = password => this.setState({ password });
     return (
-      <TextInput
+      <Input
+        type="password"
         class_name="is-am-input"
         placeholder="Password"
-        text_security={true}
         value={this.state.password}
         onChange={handleOnChange}
       />
@@ -81,7 +53,35 @@ class AuthModule extends Component {
   }
 
   renderLoginButton() {
-    return <Button class_name="is-am-button" text="LOGIN" onClick={() => this.onClickLogin()} />;
+    const handleOnClick = () => {
+      const { username, password } = this.state;
+      if (!username && !password) {
+        toastr.warning("Warning", "Please enter username and password");
+        return undefined;
+      }
+      if (!username) {
+        toastr.warning("Warning", "Please enter username");
+        return undefined;
+      }
+      if (!password) {
+        toastr.warning("Warning", "Please enter password");
+        return undefined;
+      }
+      this.props.setLoaderStatus(true);
+      if (logIn(username, password)) {
+        setTimeout(() => {
+          this.props.setActiveComponent("user_module");
+          this.props.setLoaderStatus(false);
+          toastr.success("Notification", `Hi, ${username}! Welcome to information system.`);
+        }, 500);
+      } else {
+        setTimeout(() => {
+          this.props.setLoaderStatus(false);
+          toastr.error("Error", "Username or password is incorrect");
+        }, 500);
+      }
+    };
+    return <Button class_name="is-am-button" text="LOGIN" onClick={handleOnClick} />;
   }
 
   render() {

@@ -13,8 +13,7 @@ export default (state = init_state, action) => {
       return new_state;
     }
     case "SET_USER_DATA": {
-      const { username, keys, is_admin } = action.payload;
-      const new_state = { ...state, username, keys, is_admin };
+      const new_state = { ...state, ...action.payload };
       return new_state;
     }
     default: {

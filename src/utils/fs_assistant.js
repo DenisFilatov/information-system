@@ -10,6 +10,11 @@ export const existItem = path => {
   return fs.existsSync(path);
 };
 
+export const getDirectoryContents = path => {
+  if (!existItem(path)) return null;
+  return fs.readdirSync(path);
+};
+
 export const readFile = path => {
   if (!existItem(path)) return null;
   return fs.readFileSync(path, { encoding: "utf-8" });

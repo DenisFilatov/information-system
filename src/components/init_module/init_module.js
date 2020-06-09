@@ -7,7 +7,8 @@ import { AUXILIARY_FOLDER, USERS_FOLDER } from "../../configs/global";
 import { setActiveComponent, setLoaderStatus } from "../../store/actions";
 import { getAppPath, createFolder, writeFile } from "../../utils/fs_assistant";
 import { generateKey, encrypt } from "../../utils/crypto";
-import TextInput from "../common_components/text_input";
+import { deleteAllPasswords } from "../../utils/pwd_manager";
+import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./init_module.scss";
 
@@ -19,36 +20,13 @@ class InitModule extends Component {
     };
   }
 
-  onClickSave() {
-    const { password } = this.state;
-    if (!password) {
-      toastr.warning("Warning", "Please enter password");
-      return undefined;
-    }
-    this.props.setLoaderStatus(true);
-    const auxiliary_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER);
-    const users_folder_path = _path.join(auxiliary_folder_path, USERS_FOLDER);
-    const admin_file_path = _path.join(users_folder_path, "admin");
-    const admin_file_data = JSON.stringify({ username: "admin", keys: [], is_admin: true });
-    const key = generateKey(password, "admin");
-    const encrypted_admin_file_data = encrypt(admin_file_data, key);
-    createFolder(auxiliary_folder_path);
-    createFolder(users_folder_path);
-    writeFile(admin_file_path, encrypted_admin_file_data);
-    setTimeout(() => {
-      this.props.setActiveComponent("auth_module");
-      this.props.setLoaderStatus(false);
-      toastr.success("Notification", "Initial settings has been succeeded");
-    }, 1000);
-  }
-
   renderPasswordInput() {
     const handleOnChange = password => this.setState({ password });
     return (
-      <TextInput
+      <Input
+        type="password"
         class_name="is-im-input"
         placeholder="Password"
-        text_security={true}
         value={this.state.password}
         onChange={handleOnChange}
       />
@@ -56,7 +34,30 @@ class InitModule extends Component {
   }
 
   renderSaveButton() {
-    return <Button class_name="is-im-button" text="SAVE" onClick={() => this.onClickSave()} />;
+    const handleOnClick = () => {
+      const { password } = this.state;
+      if (!password) {
+        toastr.warning("Warning", "Please enter password");
+        return undefined;
+      }
+      this.props.setLoaderStatus(true);
+      const auxiliary_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER);
+      const users_folder_path = _path.join(auxiliary_folder_path, USERS_FOLDER);
+      const admin_file_path = _path.join(users_folder_path, "admin");
+      const admin_file_data = JSON.stringify({ username: "admin", keys: [], is_admin: true });
+      const key = generateKey(password, "admin");
+      const encrypted_admin_file_data = encrypt(admin_file_data, key);
+      createFolder(auxiliary_folder_path);
+      createFolder(users_folder_path);
+      writeFile(admin_file_path, encrypted_admin_file_data);
+      deleteAllPasswords();
+      setTimeout(() => {
+        this.props.setActiveComponent("auth_module");
+        this.props.setLoaderStatus(false);
+        toastr.success("Notification", "Initial settings has been succeeded");
+      }, 1000);
+    };
+    return <Button class_name="is-im-button" text="SAVE" onClick={handleOnClick} />;
   }
 
   render() {
