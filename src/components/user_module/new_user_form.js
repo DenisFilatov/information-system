@@ -76,7 +76,7 @@ export default class NewUserForm extends Component {
   renderSaveButton() {
     const handleOnClick = () => {
       const { username, password, level, admin_password, existed_users } = this.state;
-      if (!username && !password && !level) {
+      if (!username || !password || !level || !admin_password) {
         toastr.warning("Warning", "Please enter all fields");
         return undefined;
       }
@@ -88,8 +88,9 @@ export default class NewUserForm extends Component {
         toastr.error("Error", "Invalid admin password");
         return undefined;
       }
-      this.props.onSave({ username, password, level, admin_password });
-      this.setState({ username: "", password: "", level: undefined, admin_password: "" });
+      this.setState({ username: "", password: "", level: undefined, admin_password: "" }, () =>
+        this.props.onSave({ username, password, level, admin_password })
+      );
     };
     return <Button class_name="is-nuf-button" text="SAVE" onClick={handleOnClick} />;
   }

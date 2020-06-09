@@ -25,6 +25,7 @@ export const writeFile = (path, data) => {
 };
 
 export const deleteFile = path => {
+  if (!existItem(path)) return null;
   fs.unlinkSync(path);
 };
 

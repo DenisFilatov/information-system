@@ -5,13 +5,14 @@ import { connect } from "react-redux";
 import * as _path from "path";
 import { AUXILIARY_FOLDER, USERS_FOLDER } from "../../configs/global";
 import { setActiveComponent, setLoaderStatus, setUserData } from "../../store/actions";
-import { getAppPath, writeFile } from "../../utils/fs_assistant";
+import { getAppPath, writeFile, deleteFile } from "../../utils/fs_assistant";
 import { generateKey, encrypt } from "../../utils/crypto";
 import { logOut } from "../../utils/helper";
 import Loader from "../loader/loader";
 import Topbar from "./topbar";
 import Sidebar from "./sidebar";
 import NewUserForm from "./new_user_form";
+import UsersList from "./users_list";
 import "./user_module.scss";
 
 class UserModule extends Component {
@@ -19,7 +20,7 @@ class UserModule extends Component {
     super(props);
     this.state = {
       is_loading: false,
-      selected_item: "add_user"
+      selected_item: "available_files"
     };
   }
 
@@ -42,13 +43,14 @@ class UserModule extends Component {
     const items = [
       { title: "Available files", name: "available_files", is_admin: false },
       { title: "Add file", name: "add_file", is_admin: false },
-      { title: "Add user", name: "add_user", is_admin: true }
+      { title: "Users list", name: "users_list", is_admin: true },
+      { title: "Create user", name: "create_user", is_admin: true }
     ];
     const handleOnClick = selected_item => this.setState({ selected_item });
     return (
       <Sidebar
         header_text="MENU"
-        items={items.filter(i => (this.props.is_admin ? true : i.is_admin))}
+        items={items.filter(i => (this.props.is_admin ? true : !i.is_admin))}
         onClick={handleOnClick}
       />
     );
@@ -83,6 +85,19 @@ class UserModule extends Component {
     return <NewUserForm onSave={handleOnSave} />;
   }
 
+  renderUsersList() {
+    const handleOnDelete = username => {
+      this.setState({ is_loading: true });
+      setTimeout(() => {
+        const user_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, username);
+        deleteFile(user_path);
+        this.setState({ is_loading: false });
+        toastr.success("Notification", `User ${username} deleted successfully`);
+      }, 500);
+    };
+    return <UsersList onDelete={handleOnDelete} />;
+  }
+
   renderLoader() {
     const { is_loading } = this.state;
     return <Loader source="props" position="absolute" is_active={is_loading} />;
@@ -91,7 +106,9 @@ class UserModule extends Component {
   renderSelectedItem() {
     const renderItem = () => {
       switch (this.state.selected_item) {
-        case "add_user":
+        case "users_list":
+          return this.renderUsersList();
+        case "create_user":
           return this.renderNewUserForm();
         default:
           return undefined;
