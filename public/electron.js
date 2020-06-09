@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const isDev = require("electron-is-dev");
+const keytar = require("keytar");
 const path = require("path");
 const url = require("url");
 
@@ -28,4 +29,43 @@ app.on("window-all-closed", function() {
 
 app.on("activate", function() {
   if (mainWindow === null) createWindow();
+});
+
+ipcMain.on("set-password", function(event, service, username, password) {
+  keytar
+    .setPassword(service, username, password)
+    .then(() => {
+      event.returnValue = true;
+    })
+    .catch(() => {
+      event.returnValue = false;
+    });
+});
+
+ipcMain.on("get-service-passwords", function(event, service) {
+  keytar
+    .findCredentials(service)
+    .then(res => {
+      event.returnValue = res;
+    })
+    .catch(() => {
+      event.returnValue = [];
+    });
+});
+
+ipcMain.on("delete-service-passwords", function(event, service) {
+  const promises = [];
+  keytar
+    .findCredentials(service)
+    .then(res => res.forEach(user => promises.push(keytar.deletePassword(service, user.account))))
+    .catch(() => {
+      event.returnValue = false;
+    });
+  return Promise.all(promises)
+    .then(() => {
+      event.returnValue = true;
+    })
+    .catch(() => {
+      event.returnValue = false;
+    });
 });

@@ -1,5 +1,5 @@
 //========================== UserModule ==========================//
-.is-um-container {
+.is-um-active_item {
   position: fixed;
   top: 50px;
   right: 0;
@@ -18,7 +18,8 @@
   left: 0;
   width: 200px;
   padding: 20px;
-  background-color: grey;
+  background-color: #282c34;
+  border-right: 2px solid #ffffff;
 }
 
 .is-s-header {
@@ -35,7 +36,6 @@
     margin-bottom: 20px;
   }
 }
-
 //========================== Topbar ==========================//
 .is-t-container {
   position: fixed;
@@ -46,7 +46,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: grey;
+  background-color: #282c34;
+  border-bottom: 2px solid #ffffff;
 }
 
 .is-t-username {

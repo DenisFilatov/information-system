@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as _path from "path";
 import { AUXILIARY_FOLDER, USERS_FOLDER } from "./configs/global";
-import { setActiveComponent, setLoaderStatus } from "./store/actions";
+import { setActiveComponent } from "./store/actions";
 import { getAppPath, existItem } from "./utils/fs_assistant";
 import InitModule from "./components/init_module/init_module";
 import AuthModule from "./components/auth_module/auth_module";
@@ -39,8 +39,7 @@ const mapStateToProps = store => ({
   active_component: store.mainReducer.active_component
 });
 const mapDispatchToProps = dispatch => ({
-  setActiveComponent: bindActionCreators(setActiveComponent, dispatch),
-  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch)
+  setActiveComponent: bindActionCreators(setActiveComponent, dispatch)
 });
 
 export default connect(

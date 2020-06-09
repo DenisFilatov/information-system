@@ -1,24 +1,49 @@
 import React, { Component } from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import "./user_module.scss";
 
-class Sidebar extends Component {
+export default class Sidebar extends Component {
+  renderHeader() {
+    const { header_text } = this.props;
+    return <div className="is-s-header">{header_text}</div>;
+  }
+
+  renderItems() {
+    const { items, onClick } = this.props;
+    return (
+      <div className="is-s-items">
+        {items.map(i => (
+          <div key={i.name} onClick={() => onClick(i.name)}>
+            {i.title}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="is-s-container">
-        <div className="is-s-header">MENU</div>
-        <div className="is-s-items">
-          <div>Files</div>
-          <div>My keys</div>
-          <div>Create user</div>
-        </div>
+        {this.renderHeader()}
+        {this.renderItems()}
       </div>
     );
   }
 }
 
-export default connect(
-  null,
-  null
-)(Sidebar);
+Sidebar.defaultProps = {
+  header_text: "Sidebar",
+  items: [],
+  onClick: name => console.log(name)
+};
+
+Sidebar.propTypes = {
+  header_text: PropTypes.string,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      name: PropTypes.string
+    })
+  ),
+  onClick: PropTypes.func
+};

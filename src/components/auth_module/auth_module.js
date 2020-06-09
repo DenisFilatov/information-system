@@ -3,6 +3,7 @@ import { toastr } from "react-redux-toastr";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setLoaderStatus, setActiveComponent } from "../../store/actions";
+import { getPassword } from "../../utils/pwd_manager";
 import { logIn } from "../../utils/helper";
 import TextInput from "../common_components/text_input";
 import Button from "../common_components/button";
@@ -15,6 +16,14 @@ class AuthModule extends Component {
       username: "",
       password: ""
     };
+  }
+
+  componentDidMount() {
+    const res = getPassword();
+    if (res && logIn(res.account, res.password)) {
+      this.props.setActiveComponent("user_module");
+      toastr.success("Notification", `Hi, ${res.account}! Welcome to information system.`);
+    }
   }
 
   onClickLogin() {

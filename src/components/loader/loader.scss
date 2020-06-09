@@ -1,17 +1,35 @@
-.is-l-container {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.is-l-loader {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #282c34;
   z-index: 1;
+}
+
+.is-l-loader_fixed {
+  @extend .is-l-loader;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 
   img {
     width: 250px;
     height: 250px;
+  }
+}
+
+.is-l-loader_absolute {
+  @extend .is-l-loader;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  img {
+    width: 200px;
+    height: 200px;
   }
 }

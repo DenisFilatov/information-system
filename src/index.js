@@ -14,7 +14,7 @@ export const store = createNewStore();
 ReactDOM.render(
   <Provider store={store}>
     <App />
-    <Loader />
+    <Loader source="store" position="fixed" />
     <ReduxToastr
       timeOut={4000}
       newestOnTop={false}

@@ -79,8 +79,8 @@ class InitModule extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch),
-  setActiveComponent: bindActionCreators(setActiveComponent, dispatch)
+  setActiveComponent: bindActionCreators(setActiveComponent, dispatch),
+  setLoaderStatus: bindActionCreators(setLoaderStatus, dispatch)
 });
 
 export default connect(
