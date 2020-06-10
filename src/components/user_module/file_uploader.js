@@ -36,11 +36,7 @@ export default class FileUploader extends Component {
             value={file.level}
             onChange={e => handleOnChangeLevel(index, e.target.value)}
           />
-          <img
-            src="https://icongr.am/clarity/trash.svg?size=20&color=ffffff"
-            alt="trash"
-            onClick={() => handleOndeleteFile(index)}
-          />
+          <img src="images/trash.svg" alt="trash" onClick={() => handleOndeleteFile(index)} />
         </div>
       </div>
     ));

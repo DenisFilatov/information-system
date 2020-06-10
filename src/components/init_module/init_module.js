@@ -61,7 +61,7 @@ class InitModule extends Component {
       <div className="is-im-container">
         <div className="is-im-header">
           <span>Initial settings</span>
-          <img src="https://icongr.am/clarity/file-settings.svg?size=40&color=ffffff" alt="file-settings" />
+          <img src="images/file-settings.svg" alt="file-settings" />
         </div>
         <div className="is-im-description">
           Welcome to the information system. To complete the initial settings, you need to create a password

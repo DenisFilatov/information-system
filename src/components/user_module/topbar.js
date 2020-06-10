@@ -14,7 +14,7 @@ export default class Topbar extends Component {
     return (
       <div className="is-t-logout" onClick={onLogOut}>
         <span>LogOut</span>
-        <img src="https://icongr.am/clarity/logout.svg?size=20&color=ffffff" alt="logout" />
+        <img src="images/logout.svg" alt="logout" />
       </div>
     );
   }

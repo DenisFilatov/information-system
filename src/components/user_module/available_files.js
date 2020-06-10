@@ -65,7 +65,7 @@ export default class AvailableFiles extends Component {
     if (!this.state.files.length) {
       return (
         <div className="is-af-file_viewer_info">
-          <img src="https://icongr.am/clarity/search.svg?size=20&color=747474" alt="search" />
+          <img src="images/search.svg" alt="search" />
           <span>There are no available files</span>
         </div>
       );

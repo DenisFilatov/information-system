@@ -12,7 +12,7 @@ export default class DropZone extends Component {
           <div className="is-dz-active_place" {...getRootProps()}>
             <input {...getInputProps()} />
             <div className="is-dz-information_message">
-              <img src="https://icongr.am/fontawesome/folder-open-o.svg?size=20&color=747474" alt="folder" />
+              <img src="images/folder-open.svg" alt="folder" />
               <span>Browse or Drag and Drop To Upload</span>
             </div>
           </div>
