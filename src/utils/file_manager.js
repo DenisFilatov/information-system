@@ -1,7 +1,19 @@
 import * as _path from "path";
 import { AUXILIARY_FOLDER, FILES_FOLDER } from "../configs/global";
-import { getAppPath, existItem, createFolder, writeFile, readFile } from "./fs_assistant";
 import { encrypt, decrypt } from "./crypto";
+import {
+  getAppPath,
+  getDirectoryContents,
+  existItem,
+  createFolder,
+  writeFile,
+  readFile
+} from "./fs_assistant";
+
+export const getFileNamesList = () => {
+  const files_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER, FILES_FOLDER);
+  return getDirectoryContents(files_folder_path) || [];
+};
 
 export const getDecryptFile = (name, keys = []) => {
   try {

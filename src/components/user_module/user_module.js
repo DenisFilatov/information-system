@@ -14,6 +14,7 @@ import Sidebar from "./sidebar";
 import NewUserForm from "./new_user_form";
 import UserList from "./user_list";
 import FileUploader from "./file_uploader";
+import AvailableFiles from "./available_files";
 import "./user_module.scss";
 
 class UserModule extends Component {
@@ -21,7 +22,7 @@ class UserModule extends Component {
     super(props);
     this.state = {
       is_loading: false,
-      selected_item: "file_uploader"
+      selected_item: "available_files"
     };
   }
 
@@ -108,6 +109,11 @@ class UserModule extends Component {
     return <FileUploader user_level={level} onSave={handleOnSave} />;
   }
 
+  renderAvailableFiles() {
+    const handleOnSetLoader = is_loading => this.setState({ is_loading });
+    return <AvailableFiles setRelativeLoader={handleOnSetLoader} keys={this.props.keys} />;
+  }
+
   renderLoader() {
     const { is_loading } = this.state;
     return <Loader source="props" position="absolute" is_active={is_loading} />;
@@ -116,6 +122,8 @@ class UserModule extends Component {
   renderSelectedItem() {
     const renderItem = () => {
       switch (this.state.selected_item) {
+        case "available_files":
+          return this.renderAvailableFiles();
         case "file_uploader":
           return this.renderFileUploader();
         case "user_list":

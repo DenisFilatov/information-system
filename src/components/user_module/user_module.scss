@@ -190,3 +190,66 @@
   width: 300px;
   margin: 0 auto;
 }
+
+//========================== AvailableFiles ==========================//
+.is-af-container {
+  width: 100%;
+}
+
+.is-af-header {
+  font-size: 30px;
+  text-align: center;
+  margin: 30px;
+}
+
+.is-af-file_viewer {
+  height: 280px;
+  display: flex;
+  margin: 30px;
+  border: 2px solid #747474;
+}
+
+.is-af-file_viewer_info {
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+  border: 2px solid #747474;
+  color: #747474;
+  img {
+    margin-right: 10px;
+  }
+}
+
+.is-af-file_list {
+  width: 30%;
+  border-right: 2px solid #747474;
+  & > * {
+    padding: 10px;
+    cursor: pointer;
+  }
+}
+
+.is-af-file_list-selected_item {
+  background-color: #747474;
+}
+
+.is-af-active_file {
+  width: 70%;
+  padding: 10px;
+  overflow-y: scroll;
+}
+
+.is-af-active_file_info {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #747474;
+}
+
+.is-af-update_button {
+  width: 300px;
+  margin: 0 auto;
+}

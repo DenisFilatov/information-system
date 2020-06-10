@@ -94,9 +94,9 @@ export default class UserList extends Component {
   }
 }
 
-UserList.NewUserForm = {
+UserList.defaultProps = {
   onDelete: username => console.log(username)
 };
-UserList.NewUserForm = {
+UserList.propTypes = {
   onDelete: PropTypes.func
 };
