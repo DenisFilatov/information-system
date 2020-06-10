@@ -29,7 +29,8 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
-    "wait-on": "^5.0.0"
+    "wait-on": "^5.0.0",
+    "web3-utils": "^1.2.9"
   },
   "main": "public/electron.js",
   "scripts": {

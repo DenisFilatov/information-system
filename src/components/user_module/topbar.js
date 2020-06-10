@@ -31,11 +31,11 @@ export default class Topbar extends Component {
 
 Topbar.defaultProps = {
   username: "",
-  user_level: "",
+  user_level: 0,
   onLogOut: () => console.log("LogOut")
 };
 Topbar.propTypes = {
   username: PropTypes.string,
-  user_level: PropTypes.string,
+  user_level: PropTypes.number,
   onLogOut: PropTypes.func
 };

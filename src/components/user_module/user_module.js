@@ -27,8 +27,7 @@ class UserModule extends Component {
   }
 
   renderTopbar() {
-    const { username, keys, is_admin, setActiveComponent, setLoaderStatus } = this.props;
-    const user_level = `${is_admin ? "∞" : (keys || []).length}`;
+    const { username, keys, setActiveComponent, setLoaderStatus } = this.props;
     const handleOnLogOut = () => {
       setLoaderStatus(true);
       logOut();
@@ -38,7 +37,7 @@ class UserModule extends Component {
         toastr.success("Notification", `Bye, ${username}! Сome back sooner.`);
       }, 500);
     };
-    return <Topbar username={username} user_level={user_level} onLogOut={handleOnLogOut} />;
+    return <Topbar username={username} user_level={(keys || []).length} onLogOut={handleOnLogOut} />;
   }
 
   renderSidebar() {
@@ -92,8 +91,7 @@ class UserModule extends Component {
   }
 
   renderFileUploader() {
-    const { is_admin, keys } = this.props;
-    const level = is_admin ? Infinity : (keys || []).length;
+    const { keys } = this.props;
     const handleOnSave = files => {
       this.setState({ is_loading: true });
       setTimeout(() => {
@@ -106,7 +104,7 @@ class UserModule extends Component {
         toastr.success("Notification", `Files uploaded successfully`);
       }, 500);
     };
-    return <FileUploader user_level={level} onSave={handleOnSave} />;
+    return <FileUploader user_level={(keys || []).length} onSave={handleOnSave} />;
   }
 
   renderAvailableFiles() {

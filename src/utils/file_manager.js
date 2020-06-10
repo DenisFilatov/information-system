@@ -1,4 +1,5 @@
 import * as _path from "path";
+import * as web3utils from "web3-utils";
 import { AUXILIARY_FOLDER, FILES_FOLDER } from "../configs/global";
 import { encrypt, decrypt } from "./crypto";
 import {
@@ -28,7 +29,7 @@ export const getDecryptFile = (name, keys = []) => {
       .forEach(key => {
         file_data = decrypt(file_data, key);
       });
-    return JSON.parse(file_data);
+    return JSON.parse(web3utils.toUtf8(file_data));
   } catch {
     return null;
   }
@@ -40,7 +41,7 @@ export const setEncryptFile = (data, keys = []) => {
     const files_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER, FILES_FOLDER);
     if (!existItem(files_folder_path)) createFolder(files_folder_path);
     const file_path = _path.join(files_folder_path, file_name);
-    let file_data = JSON.stringify(data);
+    let file_data = web3utils.toHex(JSON.stringify(data));
     keys.forEach(key => {
       file_data = encrypt(file_data, key);
     });
