@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { toastr } from "react-redux-toastr";
 import PropTypes from "prop-types";
-import { getUsersList, isAdminPassword } from "../../utils/user_manager";
+import { getUserList, isAdminPassword } from "../../utils/user_manager";
 import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./user_module.scss";
 
-export default class UsersList extends Component {
+export default class UserList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: getUsersList(),
+      users: getUserList(),
       username: "",
       admin_password: ""
     };
@@ -68,9 +68,9 @@ export default class UsersList extends Component {
     return <Button class_name="is-ul-button" text="DELETE" onClick={handleOnClick} />;
   }
 
-  renderUsersList() {
-    const users_list = this.state.users.map(user_name => <div key={user_name}>{user_name}</div>);
-    return <div className="is-ul-users_list">{users_list}</div>;
+  renderUserList() {
+    const user_list = this.state.users.map(user_name => <div key={user_name}>{user_name}</div>);
+    return <div className="is-ul-user_list">{user_list}</div>;
   }
 
   renderDeleteUserForm() {
@@ -87,16 +87,16 @@ export default class UsersList extends Component {
     return (
       <div className="is-ul-container">
         <div className="is-ul-header">Users List</div>
-        {this.renderUsersList()}
+        {this.renderUserList()}
         {this.renderDeleteUserForm()}
       </div>
     );
   }
 }
 
-UsersList.NewUserForm = {
+UserList.NewUserForm = {
   onDelete: username => console.log(username)
 };
-UsersList.NewUserForm = {
+UserList.NewUserForm = {
   onDelete: PropTypes.func
 };

@@ -3,15 +3,17 @@ import { toastr } from "react-redux-toastr";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setActiveComponent, setLoaderStatus, setUserData } from "../../store/actions";
-import { getDecryptFile, setEncryptFile } from "../../utils/file_manager";
+import { setEncryptFile } from "../../utils/file_manager";
 import { setUser, deleteUser } from "../../utils/user_manager";
+import { readFile } from "../../utils/fs_assistant";
 import { generateKey } from "../../utils/crypto";
 import { logOut } from "../../utils/helper";
 import Loader from "../loader/loader";
 import Topbar from "./topbar";
 import Sidebar from "./sidebar";
 import NewUserForm from "./new_user_form";
-import UsersList from "./users_list";
+import UserList from "./user_list";
+import FileUploader from "./file_uploader";
 import "./user_module.scss";
 
 class UserModule extends Component {
@@ -19,16 +21,8 @@ class UserModule extends Component {
     super(props);
     this.state = {
       is_loading: false,
-      selected_item: "available_files"
+      selected_item: "file_uploader"
     };
-  }
-
-  componentDidMount() {
-    console.log("UM: ", this.props.keys);
-    const data = { name: "file", content: "qwerty" };
-    const file_name = setEncryptFile(data, this.props.keys);
-    const decrypted_data = getDecryptFile(file_name, this.props.keys);
-    console.log("decrypted_data", decrypted_data);
   }
 
   renderTopbar() {
@@ -49,8 +43,8 @@ class UserModule extends Component {
   renderSidebar() {
     const items = [
       { title: "Available files", name: "available_files", is_admin: false },
-      { title: "Add file", name: "add_file", is_admin: false },
-      { title: "Users list", name: "users_list", is_admin: true },
+      { title: "File uploader", name: "file_uploader", is_admin: false },
+      { title: "User list", name: "user_list", is_admin: true },
       { title: "Create user", name: "create_user", is_admin: true }
     ];
     const handleOnClick = selected_item => this.setState({ selected_item });
@@ -84,7 +78,7 @@ class UserModule extends Component {
     return <NewUserForm onSave={handleOnSave} />;
   }
 
-  renderUsersList() {
+  renderUserList() {
     const handleOnDelete = username => {
       this.setState({ is_loading: true });
       setTimeout(() => {
@@ -93,7 +87,25 @@ class UserModule extends Component {
         toastr.success("Notification", `User ${username} deleted successfully`);
       }, 500);
     };
-    return <UsersList onDelete={handleOnDelete} />;
+    return <UserList onDelete={handleOnDelete} />;
+  }
+
+  renderFileUploader() {
+    const { is_admin, keys } = this.props;
+    const level = is_admin ? Infinity : (keys || []).length;
+    const handleOnSave = files => {
+      this.setState({ is_loading: true });
+      setTimeout(() => {
+        this.setState({ is_loading: false });
+        files.forEach(({ name, path, type, level }) => {
+          const content = readFile(path);
+          const saved_data = { name, type, content };
+          setEncryptFile(saved_data, keys.slice(0, level));
+        });
+        toastr.success("Notification", `Files uploaded successfully`);
+      }, 500);
+    };
+    return <FileUploader user_level={level} onSave={handleOnSave} />;
   }
 
   renderLoader() {
@@ -104,8 +116,10 @@ class UserModule extends Component {
   renderSelectedItem() {
     const renderItem = () => {
       switch (this.state.selected_item) {
-        case "users_list":
-          return this.renderUsersList();
+        case "file_uploader":
+          return this.renderFileUploader();
+        case "user_list":
+          return this.renderUserList();
         case "create_user":
           return this.renderNewUserForm();
         default:

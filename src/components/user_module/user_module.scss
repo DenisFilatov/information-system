@@ -69,7 +69,6 @@
 //========================== NewUserForm ==========================//
 .is-nuf-container {
   width: 100%;
-  height: 100%;
 }
 
 .is-nuf-header {
@@ -88,25 +87,23 @@
   margin: 20px auto;
 }
 
-//========================== NewUserForm ==========================//
+//========================== UserList ==========================//
 .is-ul-container {
   width: 100%;
-  height: 100%;
 }
 
 .is-ul-header {
   font-size: 30px;
   text-align: center;
-  margin: 30px 0;
+  margin: 30px;
 }
 
-.is-ul-users_list {
-  width: 100%;
-  max-height: 280px;
+.is-ul-user_list {
+  max-height: 242px;
   display: flex;
   flex-direction: column;
   border: 2px solid #747474;
-  margin: 30px 0;
+  margin: 30px;
   overflow-y: scroll;
   & > * {
     padding: 10px 20px;
@@ -117,10 +114,10 @@
 }
 
 .is-ul-duf {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 30px;
 }
 
 .is-ul-input {
@@ -130,4 +127,66 @@
 
 .is-ul-button {
   width: 150px;
+}
+
+//========================== FileUploader ==========================//
+.is-fu-container {
+  width: 100%;
+}
+
+.is-fu-header {
+  font-size: 30px;
+  text-align: center;
+  margin: 30px;
+}
+
+.is-fu-drop_zone {
+  height: 85px;
+  margin: 30px;
+}
+
+.is-fu-file_list {
+  max-height: 162px;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #747474;
+  margin: 30px;
+  overflow-y: scroll;
+}
+
+.is-fu-file {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  &:not(:last-child) {
+    border-bottom: 2px solid #747474;
+  }
+}
+
+.is-fu-file_title {
+  margin-right: 20px;
+}
+
+.is-fu-file_menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & > input {
+    width: 45px;
+    outline: none;
+    background-color: #282c34;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 0 0 1px #ffffff;
+    margin-right: 10px;
+  }
+  & > img {
+    cursor: pointer;
+  }
+}
+
+.is-fu-save_button {
+  width: 300px;
+  margin: 0 auto;
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { toastr } from "react-redux-toastr";
 import PropTypes from "prop-types";
-import { getUsersList, isAdminPassword } from "../../utils/user_manager";
+import { getUserList, isAdminPassword } from "../../utils/user_manager";
 import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./user_module.scss";
@@ -14,7 +14,7 @@ export default class NewUserForm extends Component {
       password: "",
       level: undefined,
       admin_password: "",
-      existed_users: getUsersList()
+      existed_users: getUserList()
     };
   }
 

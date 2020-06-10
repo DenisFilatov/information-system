@@ -4,7 +4,7 @@ import { getAppPath, getDirectoryContents, writeFile, readFile, deleteFile } fro
 import { generateKey, encrypt, decrypt } from "./crypto";
 import { isJsonString } from "./helper";
 
-export const getUsersList = () => {
+export const getUserList = () => {
   const users_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER);
   return getDirectoryContents(users_folder_path) || [];
 };
