@@ -36,7 +36,7 @@ export const logIn = (username, password) => {
     const decrypted_content = decrypt(file_content, key);
     if (isJsonString(decrypted_content)) {
       const parsed_content = JSON.parse(decrypted_content);
-      if (isObject(parsed_content) && parsed_content.keys) {
+      if (isObject(parsed_content)) {
         const { username, keys, is_admin } = parsed_content;
         setPassword(username, password);
         store.dispatch(setUserData({ username, keys, is_admin }));

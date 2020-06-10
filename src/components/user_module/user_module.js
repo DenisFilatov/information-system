@@ -3,6 +3,7 @@ import { toastr } from "react-redux-toastr";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setActiveComponent, setLoaderStatus, setUserData } from "../../store/actions";
+import { getDecryptFile, setEncryptFile } from "../../utils/file_manager";
 import { setUser, deleteUser } from "../../utils/user_manager";
 import { generateKey } from "../../utils/crypto";
 import { logOut } from "../../utils/helper";
@@ -20,6 +21,14 @@ class UserModule extends Component {
       is_loading: false,
       selected_item: "available_files"
     };
+  }
+
+  componentDidMount() {
+    console.log("UM: ", this.props.keys);
+    const data = { name: "file", content: "qwerty" };
+    const file_name = setEncryptFile(data, this.props.keys);
+    const decrypted_data = getDecryptFile(file_name, this.props.keys);
+    console.log("decrypted_data", decrypted_data);
   }
 
   renderTopbar() {
@@ -112,7 +121,6 @@ class UserModule extends Component {
   }
 
   render() {
-    console.log("UM: ", this.props.keys);
     return (
       <React.Fragment>
         {this.renderTopbar()}

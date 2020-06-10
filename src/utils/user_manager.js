@@ -28,6 +28,6 @@ export const isAdminPassword = password => {
   if (!file_content) return false;
   const key = generateKey(password, "admin");
   const decrypted_content = decrypt(file_content, key);
-  if (isJsonString(decrypted_content) && JSON.parse(decrypted_content).keys) return true;
+  if (isJsonString(decrypted_content)) return true;
   else return false;
 };

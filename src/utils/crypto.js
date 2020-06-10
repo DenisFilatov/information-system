@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { HASH_ALGORITHM, CIPHER_ALGORITHM, KEY_LENGTH, IV_LENGTH } from "../configs/global";
-import { hexToByteArray, removeSystemSymbols } from "./helper";
+import { hexToByteArray } from "./helper";
 
 export const generateKey = (password, salt) => {
   if (password === undefined) password = crypto.randomBytes(32);
@@ -24,7 +24,7 @@ export const decrypt = (content, key_hex) => {
   const key = key_bytes.slice(IV_LENGTH);
   const message = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv);
   message.setAutoPadding(false);
-  return removeSystemSymbols(message.update(content, "hex", "utf-8") + message.final("utf-8"));
+  return message.update(content, "hex", "utf-8") + message.final("utf-8");
 };
 
 export const hash = content => {
