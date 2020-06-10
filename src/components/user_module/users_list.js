@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { toastr } from "react-redux-toastr";
 import PropTypes from "prop-types";
-import { isAdminPassword, getUsersList } from "../../utils/helper";
+import { getUsersList, isAdminPassword } from "../../utils/user_manager";
 import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./user_module.scss";

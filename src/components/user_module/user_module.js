@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { toastr } from "react-redux-toastr";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as _path from "path";
-import { AUXILIARY_FOLDER, USERS_FOLDER } from "../../configs/global";
 import { setActiveComponent, setLoaderStatus, setUserData } from "../../store/actions";
-import { getAppPath, writeFile, deleteFile } from "../../utils/fs_assistant";
-import { generateKey, encrypt } from "../../utils/crypto";
+import { setUser, deleteUser } from "../../utils/user_manager";
+import { generateKey } from "../../utils/crypto";
 import { logOut } from "../../utils/helper";
 import Loader from "../loader/loader";
 import Topbar from "./topbar";
@@ -65,17 +63,9 @@ class UserModule extends Component {
           const new_key = generateKey();
           keys.push(new_key);
         }
-        const user_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, username);
-        const user_data = JSON.stringify({ username, keys, is_admin: false });
-        const key = generateKey(password, username);
-        const encrypted_user_data = encrypt(user_data, key);
-        writeFile(user_path, encrypted_user_data);
+        setUser(username, password, keys, false);
         if (keys.length > this.props.keys.length) {
-          const admin_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, "admin");
-          const admin_data = JSON.stringify({ username: "admin", keys, is_admin: true });
-          const key = generateKey(admin_password, "admin");
-          const encrypted_admin_data = encrypt(admin_data, key);
-          writeFile(admin_path, encrypted_admin_data);
+          setUser("admin", admin_password, keys, true);
           this.props.setUserData({ keys });
         }
         this.setState({ is_loading: false });
@@ -89,8 +79,7 @@ class UserModule extends Component {
     const handleOnDelete = username => {
       this.setState({ is_loading: true });
       setTimeout(() => {
-        const user_path = _path.join(getAppPath(), AUXILIARY_FOLDER, USERS_FOLDER, username);
-        deleteFile(user_path);
+        deleteUser(username);
         this.setState({ is_loading: false });
         toastr.success("Notification", `User ${username} deleted successfully`);
       }, 500);
@@ -123,6 +112,7 @@ class UserModule extends Component {
   }
 
   render() {
+    console.log("UM: ", this.props.keys);
     return (
       <React.Fragment>
         {this.renderTopbar()}

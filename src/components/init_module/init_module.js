@@ -5,9 +5,9 @@ import { toastr } from "react-redux-toastr";
 import * as _path from "path";
 import { AUXILIARY_FOLDER, USERS_FOLDER } from "../../configs/global";
 import { setActiveComponent, setLoaderStatus } from "../../store/actions";
-import { getAppPath, createFolder, writeFile } from "../../utils/fs_assistant";
-import { generateKey, encrypt } from "../../utils/crypto";
+import { getAppPath, createFolder } from "../../utils/fs_assistant";
 import { deleteAllPasswords } from "../../utils/pwd_manager";
+import { setUser } from "../../utils/user_manager";
 import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./init_module.scss";
@@ -43,14 +43,10 @@ class InitModule extends Component {
       this.props.setLoaderStatus(true);
       const auxiliary_folder_path = _path.join(getAppPath(), AUXILIARY_FOLDER);
       const users_folder_path = _path.join(auxiliary_folder_path, USERS_FOLDER);
-      const admin_file_path = _path.join(users_folder_path, "admin");
-      const admin_file_data = JSON.stringify({ username: "admin", keys: [], is_admin: true });
-      const key = generateKey(password, "admin");
-      const encrypted_admin_file_data = encrypt(admin_file_data, key);
+      deleteAllPasswords();
       createFolder(auxiliary_folder_path);
       createFolder(users_folder_path);
-      writeFile(admin_file_path, encrypted_admin_file_data);
-      deleteAllPasswords();
+      setUser("admin", password, [], true);
       setTimeout(() => {
         this.props.setActiveComponent("auth_module");
         this.props.setLoaderStatus(false);
