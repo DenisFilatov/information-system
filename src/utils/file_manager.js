@@ -29,7 +29,8 @@ export const getDecryptFile = (name, keys = []) => {
       .forEach(key => {
         file_data = decrypt(file_data, key);
       });
-    return JSON.parse(web3utils.toUtf8(file_data));
+    file_data = JSON.parse(web3utils.toUtf8(file_data));
+    return { ...file_data, path: file_path };
   } catch {
     return null;
   }

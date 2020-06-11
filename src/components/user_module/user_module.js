@@ -5,16 +5,17 @@ import { connect } from "react-redux";
 import { setActiveComponent, setLoaderStatus, setUserData } from "../../store/actions";
 import { setEncryptFile } from "../../utils/file_manager";
 import { setUser, deleteUser } from "../../utils/user_manager";
-import { readFile } from "../../utils/fs_assistant";
+import { readFile, deleteFile } from "../../utils/fs_assistant";
 import { generateKey } from "../../utils/crypto";
 import { logOut } from "../../utils/helper";
 import Loader from "../loader/loader";
 import Topbar from "./topbar";
 import Sidebar from "./sidebar";
-import NewUserForm from "./new_user_form";
+import UserForm from "./user_form";
 import UserList from "./user_list";
 import FileUploader from "./file_uploader";
 import AvailableFiles from "./available_files";
+import LevelForm from "./level_form";
 import "./user_module.scss";
 
 class UserModule extends Component {
@@ -45,7 +46,8 @@ class UserModule extends Component {
       { title: "Available files", name: "available_files", is_admin: false },
       { title: "File uploader", name: "file_uploader", is_admin: false },
       { title: "User list", name: "user_list", is_admin: true },
-      { title: "Create user", name: "create_user", is_admin: true }
+      { title: "Create user", name: "create_user", is_admin: true },
+      { title: "Increase level", name: "increase_level", is_admin: true }
     ];
     const handleOnClick = selected_item => this.setState({ selected_item });
     return (
@@ -57,7 +59,7 @@ class UserModule extends Component {
     );
   }
 
-  renderNewUserForm() {
+  renderUserForm() {
     const handleOnSave = ({ username, password, level, admin_password }) => {
       this.setState({ is_loading: true });
       setTimeout(() => {
@@ -75,7 +77,7 @@ class UserModule extends Component {
         toastr.success("Notification", `User ${username} created successfully`);
       }, 500);
     };
-    return <NewUserForm onSave={handleOnSave} />;
+    return <UserForm onSave={handleOnSave} />;
   }
 
   renderUserList() {
@@ -95,12 +97,12 @@ class UserModule extends Component {
     const handleOnSave = files => {
       this.setState({ is_loading: true });
       setTimeout(() => {
-        this.setState({ is_loading: false });
         files.forEach(({ name, path, type, level }) => {
           const content = readFile(path);
           const saved_data = { name, type, content };
           setEncryptFile(saved_data, keys.slice(0, level));
         });
+        this.setState({ is_loading: false });
         toastr.success("Notification", `Files uploaded successfully`);
       }, 500);
     };
@@ -109,7 +111,35 @@ class UserModule extends Component {
 
   renderAvailableFiles() {
     const handleOnSetLoader = is_loading => this.setState({ is_loading });
-    return <AvailableFiles setRelativeLoader={handleOnSetLoader} keys={this.props.keys} />;
+    const handleOnDelete = path => {
+      this.setState({ is_loading: true });
+      setTimeout(() => {
+        deleteFile(path);
+        this.setState({ is_loading: false });
+        toastr.success("Notification", `File deleted successfully`);
+      }, 500);
+    };
+    return (
+      <AvailableFiles keys={this.props.keys} setRelativeLoader={handleOnSetLoader} onDelte={handleOnDelete} />
+    );
+  }
+
+  renderLevelForm() {
+    const keys = (this.props.keys || []).slice();
+    const handleOnSave = ({ level, admin_password }) => {
+      this.setState({ is_loading: true });
+      setTimeout(() => {
+        this.setState({ is_loading: false });
+        for (let i = keys.length; i < level; i++) {
+          const new_key = generateKey();
+          keys.push(new_key);
+        }
+        setUser("admin", admin_password, keys, true);
+        this.props.setUserData({ keys });
+        toastr.success("Notification", `Level increased successfully`);
+      }, 500);
+    };
+    return <LevelForm min_level={keys.length + 1} onSave={handleOnSave} />;
   }
 
   renderLoader() {
@@ -127,7 +157,9 @@ class UserModule extends Component {
         case "user_list":
           return this.renderUserList();
         case "create_user":
-          return this.renderNewUserForm();
+          return this.renderUserForm();
+        case "increase_level":
+          return this.renderLevelForm();
         default:
           return undefined;
       }

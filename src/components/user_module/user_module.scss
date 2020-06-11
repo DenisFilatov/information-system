@@ -66,23 +66,23 @@
   }
 }
 
-//========================== NewUserForm ==========================//
-.is-nuf-container {
+//========================== UserForm ==========================//
+.is-uf-container {
   width: 100%;
 }
 
-.is-nuf-header {
+.is-uf-header {
   font-size: 30px;
   text-align: center;
   margin: 30px 0;
 }
 
-.is-nuf-input {
+.is-uf-input {
   width: 400px;
   margin: 20px auto;
 }
 
-.is-nuf-button {
+.is-uf-button {
   width: 300px;
   margin: 20px auto;
 }
@@ -251,7 +251,35 @@
   color: #747474;
 }
 
-.is-af-update_button {
+.is-af-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+}
+
+.is-af-button {
+  width: 180px;
+  margin: 0 10px;
+}
+
+//========================== LevelForm ==========================//
+.is-lf-container {
+  width: 100%;
+}
+
+.is-lf-header {
+  font-size: 30px;
+  text-align: center;
+  margin: 30px;
+}
+
+.is-lf-input {
+  width: 400px;
+  margin: 20px auto;
+}
+
+.is-lf-button {
   width: 300px;
-  margin: 0 auto;
+  margin: 20px auto;
 }

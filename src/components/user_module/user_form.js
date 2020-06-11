@@ -6,7 +6,7 @@ import Input from "../common_components/input";
 import Button from "../common_components/button";
 import "./user_module.scss";
 
-export default class NewUserForm extends Component {
+export default class UserForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +23,7 @@ export default class NewUserForm extends Component {
     return (
       <Input
         type="text"
-        class_name="is-nuf-input"
+        class_name="is-uf-input"
         placeholder="Username"
         value={this.state.username}
         onChange={handleOnChange}
@@ -36,7 +36,7 @@ export default class NewUserForm extends Component {
     return (
       <Input
         type="password"
-        class_name="is-nuf-input"
+        class_name="is-uf-input"
         placeholder="Password"
         value={this.state.password}
         onChange={handleOnChange}
@@ -52,7 +52,7 @@ export default class NewUserForm extends Component {
     return (
       <Input
         type="number"
-        class_name="is-nuf-input"
+        class_name="is-uf-input"
         placeholder="Level"
         value={this.state.level}
         onChange={handleOnChange}
@@ -65,7 +65,7 @@ export default class NewUserForm extends Component {
     return (
       <Input
         type="password"
-        class_name="is-nuf-input"
+        class_name="is-uf-input"
         placeholder="Admin password"
         value={this.state.admin_password}
         onChange={handleOnChange}
@@ -92,13 +92,13 @@ export default class NewUserForm extends Component {
         this.props.onSave({ username, password, level, admin_password })
       );
     };
-    return <Button class_name="is-nuf-button" text="SAVE" onClick={handleOnClick} />;
+    return <Button class_name="is-uf-button" text="SAVE" onClick={handleOnClick} />;
   }
 
   render() {
     return (
-      <div className="is-nuf-container">
-        <div className="is-nuf-header">New User</div>
+      <div className="is-uf-container">
+        <div className="is-uf-header">New User</div>
         {this.renderUsernameInput()}
         {this.renderPasswordInput()}
         {this.renderLevelInput()}
@@ -109,9 +109,9 @@ export default class NewUserForm extends Component {
   }
 }
 
-NewUserForm.NewUserForm = {
+UserForm.defaultProps = {
   onSave: user => console.log(user)
 };
-NewUserForm.NewUserForm = {
+UserForm.propTypes = {
   onSave: PropTypes.func
 };

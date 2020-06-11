@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { toastr } from "react-redux-toastr";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { getFileNamesList, getDecryptFile } from "../../utils/file_manager";
@@ -78,9 +79,28 @@ export default class AvailableFiles extends Component {
     );
   }
 
-  renderUpdateButton() {
-    const handleOnClick = () => this.updateFiles();
-    return <Button class_name="is-af-update_button" text="UPDATE" onClick={handleOnClick} />;
+  renderMenu() {
+    const handleOnUpdate = () => this.updateFiles();
+    const handleOnDelete = () => {
+      const { files, active_file_index } = this.state;
+      if (active_file_index === null) {
+        toastr.warning("Warning", "Select file to delete");
+        return undefined;
+      }
+      const file_path = files[active_file_index].path;
+      this.props.onDelte(file_path);
+      this.setState(prevState => {
+        const updated_files = prevState.files.slice();
+        updated_files.splice(active_file_index, 1);
+        return { files: updated_files };
+      });
+    };
+    return (
+      <div className="is-af-menu">
+        <Button class_name="is-af-button" text="UPDATE" onClick={handleOnUpdate} />
+        <Button class_name="is-af-button" text="DELETE" onClick={handleOnDelete} />
+      </div>
+    );
   }
 
   render() {
@@ -88,7 +108,7 @@ export default class AvailableFiles extends Component {
       <div className="is-af-container">
         <div className="is-af-header">Available Files</div>
         {this.renderFileViewer()}
-        {this.renderUpdateButton()}
+        {this.renderMenu()}
       </div>
     );
   }
@@ -96,9 +116,11 @@ export default class AvailableFiles extends Component {
 
 AvailableFiles.defaultProps = {
   keys: [],
-  setRelativeLoader: status => console.log(status)
+  setRelativeLoader: status => console.log(status),
+  onDelte: path => console.log(path)
 };
 AvailableFiles.propTypes = {
   keys: PropTypes.arrayOf(PropTypes.string),
-  setRelativeLoader: PropTypes.func
+  setRelativeLoader: PropTypes.func,
+  onDelte: PropTypes.func
 };
